@@ -1,1 +1,7 @@
 client/.env
+
+
+server/target/
+server/build/
+server/*.log
+server/*.jar
