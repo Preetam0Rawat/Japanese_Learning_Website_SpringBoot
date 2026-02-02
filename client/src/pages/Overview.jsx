@@ -11,7 +11,7 @@ import music from '../images/music.png'
 import japaneseCulture from '../images/japaneseCulture.png'
 import Features from '../components/Features.jsx'
 import WhyJapanese from '../components/WhyJapanese.jsx'
-const OverView = () => {
+const Overview = () => {
 
   const navigate = useNavigate()
 
@@ -67,6 +67,6 @@ const OverView = () => {
 
 }
 
-export default OverView
+export default Overview
 
 
