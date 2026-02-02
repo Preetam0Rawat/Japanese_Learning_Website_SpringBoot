@@ -8,7 +8,7 @@ Built with a modern production setup using Spring Boot (backend) and Vite + Reac
 
 ## 🚀 Live Demo
 
-👉 **[Click here to visit the website](https://japanese-learning-website-spring-bo.vercel.app/**
+👉 **[Click here to visit the website](https://japanese-learning-website-spring-bo.vercel.app)**
 
 ---
 
