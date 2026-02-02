@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@layer utilities {
+
+
+    .custom-shadow {
+        filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3)) drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.15));
+        border-radius: 8px;
+    }
+
+
+
+    @keyframes spin-slow {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animate-spin-slow {
+        animation: spin-slow 4s linear infinite;
+    }
+
+
+
+
+    .myScrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .myScrollbar::-webkit-scrollbar-track {
+        background: #fcfbfbef;
+    }
+
+    .myScrollbar::-webkit-scrollbar-thumb {
+        background-color: #df950c;
+        border-radius: 9999px;
+    }
+
+
+
+
+
+    @keyframes slideDown {
+        0% {
+            transform: translateY(-90%);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slideDown {
+        animation: slideDown 1s;
+        animation-timeline: view();
+        animation-range: entry 0% cover 80%;
+    }
+
+
+    @keyframes slideUp {
+        0% {
+            transform: translateY(90%);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slideUp {
+        animation: slideUp 1s;
+        animation-timeline: view();
+        animation-range: entry 0% cover 80%;
+    }
+
+    @keyframes slideRight {
+        0% {
+            transform: translateX(-30%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slideRight {
+        animation: slideRight 1s;
+        animation-timeline: view();
+        animation-range: entry 0%  ;
+    }
+
+
+
+
+      @keyframes slideLeft {
+        0% {
+            transform: translateX(30%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slideLeft {
+        animation: slideLeft 1s;
+        animation-timeline: view();
+        animation-range: entry 0% ;
+    }
+
+
+
+
+    .animate-showTitle {
+        animation: showTitle 2.3s ease-out both;
+        animation-delay: 2.5s;
+    }
+}
