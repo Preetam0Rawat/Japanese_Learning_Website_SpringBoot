@@ -22,8 +22,7 @@ public class StudentUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // username = email
         Student student = studentRepository.findByEmail(username)

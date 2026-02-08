@@ -15,6 +15,9 @@ import com.preetam.japanese_learning_backend.dto.ItemCountResponse;
 import com.preetam.japanese_learning_backend.dto.KanjiPageResponse;
 import com.preetam.japanese_learning_backend.dto.UpdateProgressRequest;
 import com.preetam.japanese_learning_backend.dto.VocabPageResponse;
+import com.preetam.japanese_learning_backend.exception.InvalidJlptLevelException;
+import com.preetam.japanese_learning_backend.exception.InvalidProgressRequestException;
+import com.preetam.japanese_learning_backend.exception.ResourceNotFoundException;
 import com.preetam.japanese_learning_backend.model.Kanji;
 import com.preetam.japanese_learning_backend.model.Progress;
 import com.preetam.japanese_learning_backend.model.Student;
@@ -45,10 +48,12 @@ public class LearningService {
 	public List<Kanji> getAllKanji() {
 		return kanjiRepository.findAll();
 	}
+	
+	
 
 	public KanjiPageResponse getKanjiByJlptLevel(int level, int page, int limit) {
 		if (level < 1 || level > 5) {
-			throw new IllegalArgumentException("Invalid JLPT level");
+			throw new InvalidJlptLevelException("Invalid JLPT level");
 		}
 
 		// Spring pages are 0-based
@@ -57,27 +62,35 @@ public class LearningService {
 		Page<Kanji> kanjiPage = kanjiRepository.findByJlpt(level, pageable);
 
 		if (kanjiPage.isEmpty()) {
-			throw new IllegalArgumentException("No kanji found for this JLPT level");
+		    throw new ResourceNotFoundException("No kanji found for this JLPT level");
 		}
+
 
 		return new KanjiPageResponse(kanjiPage.getTotalElements(), kanjiPage.getTotalPages(), page,
 				kanjiPage.getContent());
 	}
+	
+	
+	
 
 	public Kanji getKanjiById(String id) {
 
-		return kanjiRepository.findById(id).orElseThrow(() -> new RuntimeException("Kanji not found with id: " + id));
+		return kanjiRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Kanji not found with id: " + id));
 	}
+	
+	
 
 	public List<Vocabulary> getAllVocabs() {
 		return vocabularyRepository.findAll();
 	}
+	
+	
 
 	public VocabPageResponse getVocabByJlptLevel(int level, int page, int limit) {
 
 		// ✅ Validation (same as Node)
 		if (level < 1 || level > 5) {
-			throw new IllegalArgumentException("Invalid JLPT level");
+			throw new InvalidJlptLevelException("Invalid JLPT level");
 		}
 
 		// Spring pages are 0-based
@@ -86,7 +99,7 @@ public class LearningService {
 		Page<Vocabulary> vocabPage = vocabularyRepository.findByJlpt(level, pageable);
 
 		if (vocabPage.isEmpty()) {
-			throw new IllegalArgumentException("No vocab found for JLPT level " + level);
+		    throw new ResourceNotFoundException("No kanji found for this JLPT level");
 		}
 
 		return new VocabPageResponse(vocabPage.getTotalElements(), vocabPage.getTotalPages(), page,
@@ -102,7 +115,7 @@ public class LearningService {
 
 		// 2️⃣ email → student
 		Student student = studentRepository.findByEmail(email)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+				.orElseThrow(() ->   new ResourceNotFoundException("Student not found with email: " + email));
 
 		String studentId = student.getId();
 
@@ -115,38 +128,37 @@ public class LearningService {
 																											// null
 		}
 
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provide either kanjiId OR vocabularyId");
-	}
+		 throw new InvalidProgressRequestException(
+		            "Provide either kanjiId OR vocabularyId"
+		    );	
+		 }
 
 	
 	
 	public Progress updateProgressStatus(UpdateProgressRequest request, Authentication authentication) {
 
-// 1️⃣ JWT → email
 		String email = authentication.getName();
-
-// 2️⃣ email → student
 		Student student = studentRepository.findByEmail(email)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
 
 		String studentId = student.getId();
 
-// 3️⃣ request data (record style)
 		String kanjiId = request.kanjiId();
 		String vocabularyId = request.vocabularyId();
 		Progress.Status status = request.status();
 
 // ===== validations =====
 		if (status == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status is required");
+		    throw new InvalidProgressRequestException("Status is required");
 		}
 
 		boolean both = kanjiId != null && vocabularyId != null;
 		boolean none = kanjiId == null && vocabularyId == null;
 
 		if (both || none) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"Provide either kanjiId OR vocabularyId (not both or none)");
+			 throw new InvalidProgressRequestException(
+			            "Provide either kanjiId OR vocabularyId"
+			    );	
 		}
 
 // ===== find existing =====
@@ -182,12 +194,12 @@ public class LearningService {
 		String email = authentication.getName();
 
 		Student student = studentRepository.findByEmail(email)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
 
 		String studentId = student.getId();
 
 		if (kanjiId == null && vocabularyId == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "kanjiId or vocabularyId required");
+			throw new InvalidProgressRequestException("kanjiId or vocabularyId required");
 		}
 
 		Optional<Progress> optional;
@@ -199,7 +211,8 @@ public class LearningService {
 		}
 
 		Progress progress = optional
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Progress not found"));
+				.orElseThrow(() ->  new ResourceNotFoundException("Progress not found"));
+
 
 		progressRepository.delete(progress);
 	}
@@ -211,7 +224,8 @@ public class LearningService {
 
 	    Student student = studentRepository.findByEmail(email)
 	            .orElseThrow(() ->
-	                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+	            new ResourceNotFoundException("Student not found with email: " + email));
+
 
 	    String studentId = student.getId();
 

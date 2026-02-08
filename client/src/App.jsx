@@ -8,6 +8,7 @@ import ReportBug from './pages/ReportBug.jsx'
 import Signup from './pages/Signup.jsx'
 import Signin from './pages/Signin.jsx'
 import Overview from './pages/Overview.jsx'
+import ErrorComponent from './components/ErrorComponent.jsx'
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
          <Route path = '/report' element = {<ReportBug/>} />
          <Route path = '/signup' element = {<Signup/>} />
          <Route path = '/signin' element = {<Signin/>} />
+         <Route path = '*' element = {<ErrorComponent/>} />
        </Routes>
     </BrowserRouter>  
 

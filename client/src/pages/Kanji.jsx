@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getKanjiByLevel, getKanjiDetails } from "../api/index.jsx";
 import KanjiLayout from "../components/KanjiLayout.jsx";
 import inkStone from '../images/inkstone.png'
@@ -18,7 +18,7 @@ const Kanji = () => {
     const currentPage = parseInt(searchParams.get("page")) || 1
 
     const [loading, setLoading] = useState(true);
-
+    const navigate = useNavigate();
 
     const limit = 25;
 
@@ -32,7 +32,7 @@ const Kanji = () => {
                 setKanjis(response.data.kanjis);
                 setTotalPages(response.data.totalPages);
             } catch (error) {
-                console.error("Error fetching kanjis:", error);
+                console.error("Error fetching kanjis:", error.response?.data.message);
             } finally {
                 setLoading(false); // stop loading
             }

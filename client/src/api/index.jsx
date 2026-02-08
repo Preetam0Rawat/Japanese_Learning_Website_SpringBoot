@@ -2,7 +2,28 @@ import axios from "axios";
 
 const API = axios.create({baseURL : import.meta.env.VITE_API_URL})
 
+//INTERCEPTOR
+API.interceptors.response.use(
+  (res) => res,
+  (err) => {
 
+    const status = err.response?.status;
+
+    if (status === 404 || status === 400) {
+      window.location.href = "/error";
+    }
+
+    if (status === 401) {
+      window.location.href = "/login";
+    }
+
+    if (status === 500) {
+      window.location.href = "/error";
+    }
+
+    return Promise.reject(err);
+  }
+);
 
 export const getKanjiVocabCount = (token) => API.get(`/learn/item-count`, {headers : {Authorization : `Bearer ${token}`}})
       

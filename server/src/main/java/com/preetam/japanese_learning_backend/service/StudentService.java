@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.preetam.japanese_learning_backend.dto.SignupRequest;
 import com.preetam.japanese_learning_backend.dto.SignupResponse;
+import com.preetam.japanese_learning_backend.exception.BadRequestException;
 import com.preetam.japanese_learning_backend.model.Student;
 import com.preetam.japanese_learning_backend.repository.StudentRepository;
 
@@ -24,11 +25,11 @@ public class StudentService {
 
         // 1️⃣ Check if email already exists
         if (studentRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("Email already registered");
+        	throw new BadRequestException("Email already registered");
         }
         
         if (!request.password().equals(request.confirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+        	throw new BadRequestException("Passwords do not match");
         }
 
         // 2️⃣ Hash password
